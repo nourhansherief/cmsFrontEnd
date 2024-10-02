@@ -1,0 +1,31 @@
+body {
+    background-color: #343a40;
+    color: #ffffff;
+  }
+  
+  .navbar,
+  .sidebar {
+    background-color: #000000;
+  }
+  
+  .content {
+    background-color: #6c757d;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 100vh;
+  }
+  
+  .sidebar a,
+  .sidebar .dropdown-menu a {
+    color: #ffffff;
+  }
+  
+  .sidebar .dropdown-menu {
+    background-color: #343a40;
+  }
+  
+  .sidebar .dropdown-menu a:hover {
+    background-color: #495057;
+  }
+  

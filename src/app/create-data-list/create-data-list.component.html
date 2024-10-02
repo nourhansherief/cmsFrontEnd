@@ -1,0 +1,28 @@
+<!-- create-data-list.component.html -->
+<div class="data-Definition-Container">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 content-title">
+        Create Data List
+      </div>
+    </div>
+    <div class="row bg-definitions">
+      <div class="col-12 py-3">
+        <form [formGroup]="dataListForm" (ngSubmit)="onSubmit()">
+          <div class="form-group my-3">
+            <label for="name">Name</label>
+            <input id="name" formControlName="name" class="form-control my-3" type="text" required />
+          </div>
+          <div class="form-group my-3">
+            <label for="dataDefinitionId">Data Definition</label>
+            <select id="dataDefinitionId" formControlName="dataDefinitionId" class="form-control my-3" required>
+              <option value="" disabled selected>Select a data definition</option>
+              <option *ngFor="let definition of dataDefinitions" [value]="definition._id">{{ definition.name }}</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="dataListForm.invalid">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

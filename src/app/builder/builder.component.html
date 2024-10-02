@@ -1,0 +1,39 @@
+<!-- <formio [form]="form" (submit)="onSubmit($event)"></formio> -->
+
+<div class="form-builder-container">
+    <div class="form-group my-3">
+        <label class="font-bold">
+            Name:
+        </label>
+        <input class="form-control my-3" type="text" [(ngModel)]="DataDefinitionInputValue">
+    </div>
+
+    <div class="position-relative my-2 py-2">
+        <form-builder [form]="form" [rebuild]="rebuildEmitter.asObservable()" (change)="onChange($event)"
+        [options]="builderOptions"
+            #formBuilder></form-builder>
+
+        <!-- custom submit btn -->
+        <div class="custom-submit-btn form-group has-feedback formio-component form-group">
+            <button class="btn btn-primary btn-md mt-2" type="submit" (click)="onSubmit($event)">
+                Submit
+            </button>
+            <!-- <div ref="buttonMessageContainer">
+            <span ref="buttonMessage" class="help-block"></span>
+        </div>
+        <div class="formio-errors invalid-feedback" ref="messageContainer"></div> -->
+
+        </div>
+    </div>
+</div>
+
+<!-- <formio-builder></formio-builder> -->
+
+
+<!-- <div class="well jsonviewer">
+    <pre id="json"><code class="language-json" #json></code></pre>
+</div> -->
+
+<!-- <div class="well jsonviewer">
+    <pre id="json"><code class="language-json" #json></code></pre>
+</div> -->

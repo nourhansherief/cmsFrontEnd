@@ -1,0 +1,24 @@
+.card-container {
+    width: 7rem;
+    margin-right: 1rem;
+}
+
+.content-home-card {
+    flex: 0 0 auto;
+    width: 7rem;
+    height: 7rem;
+}
+.icon-7 {
+    width: 4rem;
+    height: 4rem;
+    box-sizing: content-box;
+}
+.bg-dark-grey {
+    background-color: #333;
+}
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem #00000013;
+}
+.radius {
+    border-radius: .5rem;
+}

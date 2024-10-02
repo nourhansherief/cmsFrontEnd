@@ -1,0 +1,28 @@
+.form-builder-container {
+    color: black !important;
+}
+
+.custom-submit-btn {
+    /* display: flex;
+    position: absolute;
+    z-index: 1000;
+    /* margin-top: -2px; */
+    /* right: 10px;
+    bottom: 10px; */
+
+
+    /* display: flex;
+    flex-direction: row-reverse;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1000;
+    margin-top: -2px; */
+    position: absolute;
+    right: 0px;
+    bottom: -10px;
+}
+
+.no-drag {
+    pointer-events: none;
+  }

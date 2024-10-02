@@ -1,0 +1,31 @@
+<!-- dynamic-form.component.html -->
+<div class="data-Definition-Container">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 content-title">
+        Create Record
+      </div>
+    </div>
+    <div class="row bg-definitions">
+      <div class="col-12 py-3">
+        <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+          <div *ngFor="let field of formStructure" class="mb-3">
+            <label [for]="field.key" class="form-label">{{ field.label }}</label>
+            <input *ngIf="field.type === 'textfield'" type="text" class="form-control" [id]="field.key"
+              [formControlName]="field.key"/>
+            <input *ngIf="field.type === 'number'" type="number" class="form-control" [id]="field.key"
+              [formControlName]="field.key" />
+            <textarea *ngIf="field.type === 'textarea'" class="form-control" [id]="field.key"
+              [formControlName]="field.key"></textarea>
+            <!-- Add more input types as needed -->
+            <div *ngIf="dynamicForm.controls[field.key]?.invalid && dynamicForm.controls[field.key]?.touched"
+              class="text-danger">
+              <small *ngIf="dynamicForm.controls[field.key].errors?.['required']">This field is required</small>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="dynamicForm.invalid">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

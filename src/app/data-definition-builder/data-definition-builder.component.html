@@ -1,0 +1,28 @@
+<div class="data-Definition-Container">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 content-title">
+               Data Definition
+            </div>
+        </div>
+        <div class="row bg-definitions">
+            <div class="col-12 py-3">
+                <tabset>
+                    <tab>
+                        <ng-template tabHeading>
+                            view
+                        </ng-template>
+                        <app-builder [formData]="textareaValue" (formChanges)="setTextValue($event)"></app-builder>
+                    </tab>
+                    <tab>
+                        <ng-template tabHeading>
+                           Source 
+                        </ng-template>
+                        <textarea class="textarea-custom my-3 p-0 w-100" [(ngModel)]="textareaValue" 
+                        (ngModelChange)="onTextareaChange($event)" ></textarea>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</div>
