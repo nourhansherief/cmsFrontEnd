@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="groupContainer">
                 <div class="container">
-                    <div class="sectionContainer">
+                    <div class="sectionContainer" *ngIf="dataDefinitions?.length > 0" >
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <h4> Data Definitions </h4>
@@ -25,16 +25,18 @@
                                 style="border-radius: 5px; overflow: hidden;">
                                 <thead class="table-secondary font-bold">
                                     <tr>
+                                        <th scope="col"> ID</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="align-baseline" *ngFor="let definition of dataDefinitions">
-                                        <td>{{ definition?.name }}</td>
+                                    <tr class="align-baseline" *ngFor="let definition of dataDefinitions | paginate: { itemsPerPage: 10, currentPage: currentPage }">
+                                        <td>{{ definition?.STRUCTUREID }}</td>
+                                        <td>{{ definition?.NAME }}</td>
                                         <td class="text-primary">
                                             <div class="d-flex align-items-center">
-                                                <span (click)="editDataDefinition(definition._id)">
+                                                <span (click)="editDataDefinition(definition.STRUCTUREID)">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-pencil-square"
                                                         viewBox="0 0 16 16">
@@ -47,7 +49,7 @@
                                                     </svg>
                                                 </span>
                                                 <button class="me-3 btn btn-outlined"
-                                                    (click)="deleteDataDefinition(definition._id)">
+                                                    (click)="deleteDataDefinition(definition.STRUCTUREID)">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-trash3 text-danger "
                                                         viewBox="0 0 16 16">
@@ -65,6 +67,10 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- pagination -->
+                         <div class="d-flex justify-content-end">
+                            <pagination-controls *ngIf="currentPage>0" (pageChange)="currentPage = $event"></pagination-controls>
+                         </div>
                     </div>
                 </div>
             </div>

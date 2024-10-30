@@ -13,6 +13,7 @@ export class DataService {
 
   // Data Definitions
   getDataDefinitions(): Observable<any> {
+    // return this.http.get(`${this.apiUrl}/data-definitions`);
     return this.http.get(`${this.apiUrl}/data-definitions`);
   }
 

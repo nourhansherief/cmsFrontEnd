@@ -83,10 +83,10 @@ export class BuilderComponent {
           (data) => {
             this.action = 'update';
             console.log("data", data)
-            this.DataDefinitionInputValue = data?.name;
-            console.log("sss", data?.structure)
-            this.formData = JSON.stringify(Object.values(data?.structure));
-            this.triggerTextAreaSource();
+            this.DataDefinitionInputValue = data[0]?.NAME;
+            // console.log("sss", data?.structure)
+            // this.formData = JSON.stringify(Object.values(data?.structure));
+            // this.triggerTextAreaSource();
             // this.formData =[...data?.structure];
             // this.dataList = data;
             // this.error = null;
@@ -262,5 +262,23 @@ export class BuilderComponent {
   // updateDataDefinition() {
   //   
   // }
+
+  switchLanguage(language: string) {
+    // this.currentLanguage = language; // Set the selected language
+
+    // // Update the form fields' labels and predefined options based on the selected language
+    // this.builder.schema.components.forEach((component: any) => {
+    //   if (component.key === 'textField') {
+    //     component.label = this.predefinedValues[language].textFieldLabel;
+    //   }
+    //   if (component.key === 'selectField') {
+    //     component.label = this.predefinedValues[language].selectFieldLabel;
+    //     component.data.values = this.predefinedValues[language].selectOptions;
+    //   }
+    // });
+
+    // // Rebuild the form with updated options
+    // this.builder.instance.redraw();
+  }
 
 }
