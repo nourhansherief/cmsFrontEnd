@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component  , ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DataService } from '../data.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { SearchComponent } from '../../Shared/Components/search/search.component';
+import { PaginationComponent } from '../../Shared/Components/pagination/pagination.component';
 
 @Component({
   selector: 'app-datalists',
   standalone: true,
-  imports: [CommonModule , HttpClientModule] ,
+  imports: [CommonModule , HttpClientModule , SearchComponent , PaginationComponent] ,
   providers:[DataService],
   templateUrl: './datalists.component.html',
   styleUrl: './datalists.component.css'
@@ -15,9 +17,12 @@ import { HttpClientModule } from '@angular/common/http';
 
 export class DatalistsComponent {
 
-  dataLists: any = [];
+  dataLists: any = [] ;
+  fullDataList : any = []
+  filteredData : any = []
+  pageNumber : any = 1
 
-  constructor(private router: Router, private route: ActivatedRoute , private dataService: DataService) { }
+  constructor(private router: Router, private route: ActivatedRoute , private dataService: DataService ) { }
 
   navigate(route: string) {
     this.router.navigate([route]);
@@ -29,13 +34,26 @@ export class DatalistsComponent {
   ngOnInit(): void {
     console.log("hereeeeeeeeeeee")
     this.loadDataLists();
+    this.loadAllDataLists()
+    console.log(this.dataLists)
   }
 
-  loadDataLists() {
-    this.dataService.getDataLists().subscribe(
-      (data) => this.dataLists = data,
+  ngOnChanges(): void {
+    //this.loadDataLists();
+  }
+
+  loadDataLists(pageNumber ?: any) {
+    console.log("test" , this.pageNumber)
+    this.dataService.getDataListWithPagination(this.pageNumber).subscribe(
+      (data) => this.dataLists = data.data,
       (error) => console.error(error)
     );
+  }
+
+  loadAllDataLists() {
+    this.dataService.getDataLists().subscribe((data) => {
+      this.fullDataList = data?.data
+    })
   }
 
   editDataList(id: string) {
@@ -51,6 +69,16 @@ export class DatalistsComponent {
       () => this.loadDataLists(),
       (error) => console.error(error)
     );
+  }
+
+  handleSearchResult(searchData : any) {
+    this.filteredData = searchData
+  }
+
+  handlePaginationResult(pageNumber : any) {
+    this.pageNumber = pageNumber
+    this.loadDataLists(pageNumber)
+    console.log(pageNumber)
   }
 
 }
