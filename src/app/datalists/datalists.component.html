@@ -51,7 +51,7 @@
                         : dataLists
                     "
                   >
-                    <td>{{ dataList?.NAME }}</td>
+                    <td>{{ xmlToJson(dataList?.NAME) }}</td>
                     <td class="text-primary">
                       <div class="d-flex align-items-center">
                         <span (click)="editDataList(dataList.RECORDSETID)">

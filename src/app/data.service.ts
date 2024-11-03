@@ -39,7 +39,7 @@ export class DataService {
   }
 
   getDataListWithPagination(pageNumber?: any): Observable<any> {
-    return this.http.get(`${this.apiUrl}/data-list?page=${pageNumber}`); 
+    return this.http.get(`${this.apiUrl}/data-list?page=${pageNumber}&limit=5`);
   }
 
   createDataList(data: any): Observable<any> {
