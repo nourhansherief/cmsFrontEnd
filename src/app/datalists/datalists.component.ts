@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SearchComponent } from '../../Shared/Components/search/search.component';
 import { PaginationComponent } from '../../Shared/Components/pagination/pagination.component';
 import { ConvertXmlToJson } from '../../Utilities/HelperFunctions/xmlToJson';
+
 @Component({
   selector: 'app-datalists',
   standalone: true,
@@ -21,7 +22,9 @@ export class DatalistsComponent {
   fullDataList : any = []
   filteredData : any = []
   pageNumber : any = 1
+  isTyping : Boolean = false
   xmlToJson : any = ConvertXmlToJson
+
   constructor(private router: Router, private route: ActivatedRoute , private dataService: DataService ) { }
 
   navigate(route: string) {
@@ -36,18 +39,13 @@ export class DatalistsComponent {
     this.loadDataLists();
     this.loadAllDataLists()
     console.log(this.dataLists)
-    const ff = "<?xml version='1.0' encoding='UTF-8'?><root ><Name >wifiPasswordReset</Name></root>"
-    const gg = "Rashad"
-    console.log(ConvertXmlToJson(ff))
-    console.log(ConvertXmlToJson(gg))
   }
 
   ngOnChanges(): void {
     //this.loadDataLists();
   }
 
-  loadDataLists(pageNumber ?: any) {
-    console.log("test" , this.pageNumber)
+  loadDataLists() {
     this.dataService.getDataListWithPagination(this.pageNumber).subscribe(
       (data) => this.dataLists = data.data,
       (error) => console.error(error)
@@ -76,12 +74,13 @@ export class DatalistsComponent {
   }
 
   handleSearchResult(searchData : any) {
-    this.filteredData = searchData
+    this.filteredData = searchData?.data
+    this.isTyping = searchData?.isTyping
   }
 
   handlePaginationResult(pageNumber : any) {
     this.pageNumber = pageNumber
-    this.loadDataLists(pageNumber)
+    this.loadDataLists()
     console.log(pageNumber)
   }
 

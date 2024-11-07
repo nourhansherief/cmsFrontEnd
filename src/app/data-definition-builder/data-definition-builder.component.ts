@@ -6,13 +6,12 @@ import { TabsModule, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { FormsModule } from '@angular/forms';import { BuilderComponent } from '../builder/builder.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../data.service';
-;
 
 @Component({
   selector: 'app-data-definition-builder',
   standalone: true,
   imports: [CommonModule, RouterOutlet, FormioModule, BuilderComponent, TabsModule ,
-     FormsModule , HttpClientModule
+     FormsModule , HttpClientModule 
   ],
   providers:[DataService],
   templateUrl: './data-definition-builder.component.html',
@@ -37,10 +36,12 @@ export class DataDefinitionBuilderComponent {
   }
 
   setTextValue($event:any){
+    console.log($event)
     // console.log("event" , $event.target.component);
     try {
       // console.log("text" ,JSON.stringify($event, null, 2));
       this.textareaValue= JSON.stringify($event, null, 2);
+      console.log("wwww" , this.textareaValue);
     } catch (e) {
       // console.error('Invalid JSON array input', e);
       this.textareaValue = '';
@@ -54,6 +55,7 @@ export class DataDefinitionBuilderComponent {
   }
 
   submit($event: any) {
+    
     console.log("eeee", $event);
   }
 

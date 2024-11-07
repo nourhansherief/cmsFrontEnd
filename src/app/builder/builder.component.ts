@@ -85,10 +85,14 @@ export class BuilderComponent {
             console.log("data", data)
             this.DataDefinitionInputValue = data[0]?.NAME;
             // console.log("sss", data?.structure)
-            // this.formData = JSON.stringify(Object.values(data?.structure));
-            // this.triggerTextAreaSource();
+             //this.formData = JSON.stringify([data[0]?.DEFINITION?.fields[0]]);
+             this.formData = data[0]?.DEFINITION.fields.map((field : any) => {
+               return JSON.stringify(field)
+              })
+              console.log(this.formData)
+             this.triggerTextAreaSource();
             // this.formData =[...data?.structure];
-            // this.dataList = data;
+            //this.dataList = data;
             // this.error = null;
           },
           (error) => {
@@ -107,8 +111,9 @@ export class BuilderComponent {
   }
 
   triggerTextAreaSource() {
-    let arrayComponents = JSON.parse(this.formData);
+    let arrayComponents = this.formData.map((field : any ) => {return JSON.parse(field)})
     console.log("r", arrayComponents);
+    console.log(this.form.components)
     if (arrayComponents.length >= 0) {
       try {
 
@@ -133,9 +138,9 @@ export class BuilderComponent {
         // this.rebuildEmitter.next({});
 
         // Restore form and options after a short delay
-        console.log("8888" , this.form);
+        console.log("8888" , this.form  , "9999" , arrayComponents);
         setTimeout(() => {
-          this.formJsonVal = arrayComponents;
+          // this.formJsonVal = arrayComponents;
           this.form = { ...this.form }; // Or set to any form structure you want
           this.rebuildEmitter.next({});
           // this.rebuildEmitter.emit();
@@ -149,6 +154,7 @@ export class BuilderComponent {
   }
 
   onChange($event: any) {
+    console.log("ssss");
     let val;
     // console.log("new form" , $event?.parent?.components)
     console.log("inside change event")
@@ -232,6 +238,15 @@ export class BuilderComponent {
   }
 
   onSubmit(submission: any) {
+    let submitObj : any = {
+      NAME : this.DataDefinitionInputValue,
+      DEFINITION : {
+        defaultLanguageId : "en_US",
+        fields : this.formJsonVal
+      }
+    }
+    console.log("wwwwwwwww" , submitObj);
+    // Update Data Definition
     if (this.action == 'update') {
       this.dataService.updateDataDefinition(this.id, { name: this.DataDefinitionInputValue, structure: { ...this.formJsonVal } }).subscribe(
         () => {
@@ -240,18 +255,20 @@ export class BuilderComponent {
         (error) => console.error(error)
       );
     }
-
+    // Create Data Definition
     else {
       console.log("submit")
       // Handle the form submission data
       // console.log('Form submitted with data:', this.DataDefinitionInputValue, this.formJsonVal);
-      console.log("ee",this.formJsonVal )
-      this.dataService.createDataDefinition({ name: this.DataDefinitionInputValue, structure: { ...this.formJsonVal } }).subscribe(
-        () => {
+      submitObj = {...submitObj , USERNAME : "Ahmed Rashad"}
+      console.log("ee",submitObj )
+      //Last Step call the API
+      this.dataService.createDataDefinition({...submitObj}).subscribe(
+        (data) => {
           // this.loadDataDefinitions();
           // this.newDefinition = { name: '', structure: {} };
-          console.log("sucesssssssssss")
-          this.router.navigate(['content/dataDefinitions'])
+          console.log("data")
+          //this.router.navigate(['content/dataDefinitions'])
         },
         (error) => console.error(error)
       );

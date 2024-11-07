@@ -6,8 +6,10 @@
 }
 .groupContainer{
     background-color: #f0f0f0;
-    height: 100vh;
+    height: 400px;
+    overflow: scroll;
     padding: 20px;
+    font-size: smaller;
 }
 .sectionContainer {
     background-color: #fff;
@@ -15,4 +17,10 @@
     overflow: hidden;
     border-radius: 10px;
     color: black;
+    width: 100%;
+
+}
+.table-container {
+    width: 100%;
+    overflow-x: scroll;
 }

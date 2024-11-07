@@ -20,7 +20,7 @@
                                     (click)="navigate('content/createRecord')">+</button>
                             </div>
                         </div>
-                        <div>
+                        <div class="table-container">
                             <table class="table table-borderless table-hover"
                                 style="border-radius: 5px; overflow: hidden;">
                                 <thead class="table-secondary font-bold">
@@ -29,13 +29,19 @@
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr class="align-baseline" *ngFor="let row of records">
+                                <tbody class="table-body">
+                                    <tr class="align-baseline" *ngFor="let row of rows">
                                         <!-- {{row['data'] | json}} -->
-                                        <td *ngFor="let header of tableHeaders">{{ row['data'][header] }}</td>
+                                        <!-- <td *ngFor="let header of tableHeaders">{{ row['data'][header] }}</td> -->
+
+
+                                        <!-- <td *ngFor="let header of tableHeaders">{{ row[header] }}</td> -->
+
+                                            <td *ngFor="let header of tableHeaders">{{ row[header] }}</td>
+
                                         <td class="text-primary">
                                             <div class="d-flex align-items-center">
-                                                <span (click)="editRecord(row._id)">
+                                                <span (click)="editRecord(row?.recordId)">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-pencil-square"
                                                         viewBox="0 0 16 16">
@@ -48,7 +54,7 @@
                                                     </svg>
                                                 </span>
                                                 <button class="me-3 btn btn-outlined"
-                                                    (click)="deleteRecord(row._id)">
+                                                    (click)="deleteRecord(row?.recordId)">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-trash3 text-danger "
                                                         viewBox="0 0 16 16">

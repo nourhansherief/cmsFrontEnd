@@ -17,6 +17,11 @@ export class DataService {
     return this.http.get(`${this.apiUrl}/data-definitions`);
   }
 
+  getDataDefinitionsWithPagination(pageNumber ?: number): Observable<any> {
+    // return this.http.get(`${this.apiUrl}/data-definitions`);
+    return this.http.get(`${this.apiUrl}/data-definitions?page=${pageNumber}&limit=5`);
+  }
+
   getDataDefinition(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/data-definitions/${id}`);
   }
@@ -62,7 +67,7 @@ export class DataService {
   }
 
   getRecordsFromDataList(dataListId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/data-list/${dataListId}/records`);
+    return this.http.get(`${this.apiUrl}/data-list/${dataListId}`);
   }
 
   getDataDefinitionStructure(dataListId: string): Observable<any> {

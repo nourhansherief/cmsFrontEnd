@@ -9,18 +9,23 @@
             <div class="groupContainer">
                 <div class="container">
                     <div class="sectionContainer" *ngIf="dataDefinitions?.length > 0" >
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                             <div>
                                 <h4> Data Definitions </h4>
                             </div>
-                            <div class="d-flex justify-content-between">
-                                <!-- <div class="d-flex me-3"><input type="text" class="form-control "
-                                        id="exampleFormControlInput1" placeholder="Search" value=""></div> -->
-                                <button type="button" class="me-3 btn btn-primary"
+                            <div class="d-flex justify-content-between align-items-center">
+                                <app-search
+                                [data]="fullDataDefinition"
+                                (searchResults)="handleSearchResult($event)"
+                                (isThereAValue)="handleSearchResult($event)"
+                              ></app-search>
+                                <div>
+                                    <button type="button" class="me-3 btn btn-primary"
                                     (click)="navigate('content/createDataDefinition')">+</button>
+                                </div>
                             </div>
                         </div>
-                        <div>
+                        <div class="table-container">
                             <table class="table table-borderless table-hover"
                                 style="border-radius: 5px; overflow: hidden;">
                                 <thead class="table-secondary font-bold">
@@ -31,9 +36,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="align-baseline" *ngFor="let definition of dataDefinitions | paginate: { itemsPerPage: 10, currentPage: currentPage }">
+                                    <tr class="align-baseline" *ngFor="let definition of this.filteredData.length > 0
+                                        ? this.filteredData
+                                        : dataDefinitions">
                                         <td>{{ definition?.STRUCTUREID }}</td>
-                                        <td>{{ definition?.NAME }}</td>
+                                        <td>{{ xmlToJson(definition?.NAME) }}</td>
                                         <td class="text-primary">
                                             <div class="d-flex align-items-center">
                                                 <span (click)="editDataDefinition(definition.STRUCTUREID)">
@@ -68,9 +75,16 @@
                             </table>
                         </div>
                         <!-- pagination -->
-                         <div class="d-flex justify-content-end">
-                            <pagination-controls *ngIf="currentPage>0" (pageChange)="currentPage = $event"></pagination-controls>
-                         </div>
+                        <app-pagination
+                        *ngIf="!isTyping"
+                        [data]="dataDefinitions"
+                        [dataLength]="
+                          filteredData?.length > 0
+                            ? filteredData?.length
+                            : fullDataDefinition    ?.length
+                        "
+                        (pageNum)="handlePaginationResult($event)"
+                      ></app-pagination>
                     </div>
                 </div>
             </div>

@@ -16,3 +16,10 @@
     border-radius: 10px;
     color: black;
 }
+.table-container{
+    height: 20rem;
+    width: 100%;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: gray;
+}

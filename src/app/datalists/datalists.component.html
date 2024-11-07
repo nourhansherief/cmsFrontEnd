@@ -99,10 +99,11 @@
               </table>
             </div>
             <app-pagination
+              *ngIf="!isTyping"
               [data]="dataLists"
               [dataLength]="
-                this.filteredData?.length > 0
-                  ? this.filteredData?.length
+                filteredData?.length > 0
+                  ? filteredData?.length
                   : fullDataList?.length
               "
               (pageNum)="handlePaginationResult($event)"

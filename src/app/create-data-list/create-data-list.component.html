@@ -17,7 +17,7 @@
             <label for="dataDefinitionId">Data Definition</label>
             <select id="dataDefinitionId" formControlName="dataDefinitionId" class="form-control my-3" required>
               <option value="" disabled selected>Select a data definition</option>
-              <option *ngFor="let definition of dataDefinitions" [value]="definition._id">{{ definition.name }}</option>
+              <option *ngFor="let definition of dataDefinitions" [value]="definition._id">{{ xmlToJson(definition.NAME) }}</option>
             </select>
           </div>
           <button type="submit" class="btn btn-primary" [disabled]="dataListForm.invalid">Create</button>
