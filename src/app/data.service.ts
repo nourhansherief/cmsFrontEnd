@@ -31,7 +31,7 @@ export class DataService {
   }
 
   updateDataDefinition(id: string, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/data-definitions/${id}`, data);
+    return this.http.patch(`${this.apiUrl}/data-definitions/${id}`, data);
   }
 
   deleteDataDefinition(id: string): Observable<any> {

@@ -12,6 +12,7 @@
                         <ng-template tabHeading>
                             view
                         </ng-template>
+                        <!-- <app-builder [formData]="textareaValue"></app-builder> -->
                         <app-builder [formData]="textareaValue" (formChanges)="setTextValue($event)"></app-builder>
                     </tab>
                     <tab>

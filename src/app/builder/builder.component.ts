@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Components, FormBuilderComponent, FormioForm, FormioModule, FormioOptions } from '@formio/angular';
 import { DataService } from '../data.service';
 import { Router, ActivatedRoute } from '@angular/router';
-
+import { ConvertXmlToJson } from '../../Utilities/HelperFunctions/xmlToJson';
 @Component({
   selector: 'app-builder',
   standalone: true,
@@ -54,7 +54,11 @@ export class BuilderComponent {
   action: any;
   id:any;
 
-
+  currentLanguage : string = 'en'
+  persistentVal: any = null;
+  testData : any = [];
+  gg:any;
+  data:any;
 
   constructor(private cdRef: ChangeDetectorRef, private dataService: DataService,
     private router: Router, private route: ActivatedRoute
@@ -76,22 +80,35 @@ export class BuilderComponent {
   //   }
 
   ngOnInit(): void {
+    //console.log("9999999999");
     this.route.paramMap.subscribe(params => {
       this.id = params.get('id');
       if (this.id) {
         this.dataService.getDataDefinition(this.id).subscribe(
           (data) => {
             this.action = 'update';
-            console.log("data", data)
-            this.DataDefinitionInputValue = data[0]?.NAME;
+            // Object.freeze([...originalArray]);
+            let x:any = JSON.parse(JSON.stringify(data));
+            this.data = data;
+            //console.log("data in hereeeee", data)
+            this.DataDefinitionInputValue = ConvertXmlToJson(x[0]?.NAME);
+            this.testData = JSON.parse(JSON.stringify(data));
             // console.log("sss", data?.structure)
              //this.formData = JSON.stringify([data[0]?.DEFINITION?.fields[0]]);
-             this.formData = data[0]?.DEFINITION.fields.map((field : any) => {
-               return JSON.stringify(field)
-              })
-              console.log(this.formData)
-             this.triggerTextAreaSource();
-            // this.formData =[...data?.structure];
+
+            //  this.formData = data[0]?.DEFINITION.fields.map((field : any) => {
+            //    return JSON.stringify(field)
+            //   })
+            //  this.formData = JSON.stringify(data[0])
+            // this.formData = JSON.stringify(data[0]?.DEFINITION?.fields)
+            // this.gg = ;
+            // console.log("ff" , this.formData)
+            // this.triggerTextAreaSource(JSON.stringify(data[0]?.DEFINITION?.fields));
+            // console.log("aaaa" , data[0]?.DEFINITION?.fields)
+            this.triggerTextAreaSource(x[0]?.DEFINITION?.fields);
+            this.formChanges.emit(data[0]?.DEFINITION?.fields);
+
+            // this.formData = data[0]?.DEFINITION?.fields;
             //this.dataList = data;
             // this.error = null;
           },
@@ -104,44 +121,64 @@ export class BuilderComponent {
   }
 
   ngOnChanges() {
-    console.log("onchanges");
-    if (this.formData) {
-      this.triggerTextAreaSource();
-    }
+    // console.log("onchanges");
+    // if (this.formData) {
+      // this.triggerTextAreaSource();
+    // }
   }
 
-  triggerTextAreaSource() {
-    let arrayComponents = this.formData.map((field : any ) => {return JSON.parse(field)})
-    console.log("r", arrayComponents);
-    console.log(this.form.components)
-    if (arrayComponents.length >= 0) {
-      try {
+  triggerTextAreaSource(arrayComponents?:any) {
+    // console.log(this.formData)
+    //let arrayComponents = this.formData.map((field : any ) => {return JSON.parse(field)})
+    // let ff = JSON.parse(this.formData)?.DEFINITION?.fields
+    // arrayComponents =  JSON.parse(arrayComponents);
+    //("arrC" , arrayComponents);
 
+    //console.log("formC"  ,this.form.components);
+    arrayComponents = arrayComponents.map((item : any) => {
+      return {
+        ...item,
+        defaultValue : this.currentLanguage == 'en' ? item.defaultValue : item.defaultValueAr
+      }
+    })
+
+
+    if (arrayComponents) {
+      try {
+        this.form.components = arrayComponents ;
         // console.log("first", this.form.components)
-        while (this.form.components.length > 0) {
-          this.form.components.pop();
-        }
+        // while (this.form.components.length > 0) {
+          // this.form.components.pop();
+        // }
 
         // console.log("second", this.form.components)
 
-        console.log("external", arrayComponents);
+        // console.log("external", arrayComponents);
+
+
         if (this.form.components.length == 0) {
-          for (let i = 0; i < arrayComponents.length; i++) {
-            // console.log("key", arrayComponents[i])
-            this.form.components.push(arrayComponents[i]);
-          }
+        //   // console.log("eeee" , arrayComponents)
+        //   for (let i = 0; i < arrayComponents.length; i++) {
+        //     console.log("key", arrayComponents[i])
+        //     this.form.components.push(arrayComponents[i]);
+        //   }
+        // this.form.parent.components  = 
+        let x =  arrayComponents;
+        // The Objects the Form render in the UI (The Large Object)
+        
+        //console.log("bb" , this.form.components)
+
         }
-
-
+        
         // this.form = { ...this.form };
         //       //       this.cdRef.detectChanges();
         // this.rebuildEmitter.next({});
 
         // Restore form and options after a short delay
-        console.log("8888" , this.form  , "9999" , arrayComponents);
+        // console.log("8888" , this.form);
         setTimeout(() => {
-          // this.formJsonVal = arrayComponents;
-          this.form = { ...this.form }; // Or set to any form structure you want
+        //   // this.formJsonVal = arrayComponents;
+        //   // this.form = { ...this.form }; // Or set to any form structure you want
           this.rebuildEmitter.next({});
           // this.rebuildEmitter.emit();
         }, 0);
@@ -154,18 +191,21 @@ export class BuilderComponent {
   }
 
   onChange($event: any) {
-    console.log("ssss");
+    //console.log("ssss" , $event);
     let val;
     // console.log("new form" , $event?.parent?.components)
-    console.log("inside change event")
+    // console.log("inside change event")
     // this.handleFormChange($event);
     if ($event.type == "change") {
-
-      console.log("inside change event 1")
+     // console.log("rrrrr" ,   )
+      this.oldParentForm = !this.oldParentForm ? this.data[0]?.DEFINITION?.fields : this.oldParentForm;
+      //console.log("inside change event 1" , $event)
       val = this.setDefaultValue($event?.srcElement?.
         widget
-        ?.component?.key, $event?.target?.value)
+        ?.component?.label
+        , $event?.target?.value)
     } else {
+      //console.log("000000000")
       this.oldParentForm = $event?.parent?.components;
       val = this.oldParentForm;
     }
@@ -180,33 +220,56 @@ export class BuilderComponent {
     //   ?.component?.key, $event?.target?.value)
     //   : $event?.parent?.components;
 
-    console.log("1111", val);
+
+
+
+    //console.log("1111", val);
     this.formJsonVal = val;
-    console.log("2222", val);
+    // console.log("2222", this.formJsonVal);
     this.formChanges.emit(val);
-    // this.jsonElement!.nativeElement.innerHTML = '';
-    // this.jsonElement?.nativeElement.appendChild(document.createTextNode(JSON.stringify($event.form, null, 4)));
-    //   this.form.valueChanges
-    //     .subscribe(($event:any) => {
-    //       this.formChanges.emit($event.form.components);
-    // });
+    if (this.currentLanguage == 'en') {
+      console.log(this.persistentVal)
+      this.persistentVal = (this.persistentVal != null? this.persistentVal : val).map((item : any) => {
+        return {
+          ...item,
+          defaultValue : item.defaultValue,
+          defaultValueAr : (this.currentLanguage == 'ar') && item.defaultValueAr
+        }
+      });
+      // console.log("persistentVal set:", this.persistentVal);
+    } else {
+      console.log("preeeeeeeeee" , this.persistentVal)
+      console.log("Valllllll" , val)
+      for(let i = 0 ; i < val.length ; i++){
+
+        this.persistentVal = this.persistentVal.map((item : any) => {
+          return {
+            ...item,
+            // val[i].key == item.key && val[i].defaultValue
+            defaultValueAr : ( val[i].key === item.key) && val[i].defaultValue
+          }
+        });
+      }
+      }
   }
+  
 
   setDefaultValue(key: any, value: any) {
-    console.log("values", key, value, this.form.components);
-
+    // console.log("values", key, value, this.form.components);
+    //console.log("in default " , this.oldParentForm  , key , value)
     let data = this.oldParentForm.map((item: any) => {
-      if (item?.key === key) {
+      if (item?.label === key) {
         // Update the key if it exists, or add the key if it doesn't
         // item['defaultValue'] = value; 
-        return { ...item, 'defaultValue': value };
+        return { ...item, 'defaultValue': value};
       }
+      // console.log(item)
       return item;
     });
 
     const obj = this.oldParentForm.find((item: any) => item?.key === key); // Adjust the condition as needed
 
-    console.log("oni", obj);
+    // console.log("oni", obj);
 
     // if (obj) {
     //   // Check if the key exists and update its value, otherwise add the key with the new value
@@ -233,9 +296,6 @@ export class BuilderComponent {
     return array.map(item => JSON.stringify(item, null, 2)).join(',\n');
   }
 
-  ngOninit() {
-
-  }
 
   onSubmit(submission: any) {
     let submitObj : any = {
@@ -245,30 +305,84 @@ export class BuilderComponent {
         fields : this.formJsonVal
       }
     }
-    console.log("wwwwwwwww" , submitObj);
+    // console.log("wwwwwwwww" , submitObj);
     // Update Data Definition
     if (this.action == 'update') {
-      this.dataService.updateDataDefinition(this.id, { name: this.DataDefinitionInputValue, structure: { ...this.formJsonVal } }).subscribe(
-        () => {
-          this.router.navigate(['content/dataDefinitions'])
-        },
-        (error) => console.error(error)
-      );
+      // let x = {
+      //   this.currentLanguage :"jjj"
+      // };
+
+
+      if(this.currentLanguage == 'en') {
+        // this.gg.push(JSON.parse(this.formData))
+        // console.log(this.gg)
+      } else {
+        // submitObj = {
+        //   ...submitObj,
+        //   DEFINITION : {
+        //     ...submitObj.DEFINITION,
+        //     fields : submitObj?.DEFINITION?.fields.map((field  :any) => {
+        //       return {
+        //         ...field,
+        //         defaultValueAr : "رشاد"
+        //       }
+        //     })
+        //   }
+        // }
+        // console.log("cd" , this.testData.DEFINITION.fields)
+        // console.log("ds" , this.persistentVal)
+
+        //for(let i = 0 ; i < this.testData.DEFINITION.fields?.length ; i++){
+          console.log("Pre" , this.persistentVal)
+
+          // for(let j = 0 ; j < this.persistentVal.length ; j++){
+          //   //if(this.testData.DEFINITION.fields[i].key == this.formJsonVal[j].key){
+          //     // console.log(this.persistentVal[j].key)
+          //     // console.log("Be5")
+          //     submitObj = {
+          //       ...submitObj,
+          //       DEFINITION : {
+          //         ...submitObj.DEFINITION,
+          //         fields : this.data[0].DEFINITION.fields.map((field  :any) => {
+          //           // console.log({defaultValueAr : (this.currentLanguage == 'en' && field.key == this.persistentVal[j].key) &&  this.persistentVal[j].defaultValue})
+          //           return {
+          //             ...field,
+          //             defaultValue : (this.currentLanguage == 'en' ) && this.persistentVal[j].defaultValue ,
+          //             defaultValueAr : (this.currentLanguage == 'ar')&& this.persistentVal[j].defaultValue ,
+          //           }
+          //         })
+          //       }
+          //     }
+          //   //}
+          // }
+        //}
+      }
+      
+      console.log(submitObj)
+
+      // Send Updated Data
+
+      // this.dataService.updateDataDefinition(this.id, submitObj).subscribe(
+      //   () => {
+      //     this.router.navigate(['content/dataDefinitions'])
+      //   },
+      //   (error) => console.error(error)
+      // );
     }
     // Create Data Definition
     else {
-      console.log("submit")
+      // console.log("submit")
       // Handle the form submission data
       // console.log('Form submitted with data:', this.DataDefinitionInputValue, this.formJsonVal);
       submitObj = {...submitObj , USERNAME : "Ahmed Rashad"}
-      console.log("ee",submitObj )
+      // console.log("ee",submitObj )
       //Last Step call the API
       this.dataService.createDataDefinition({...submitObj}).subscribe(
         (data) => {
           // this.loadDataDefinitions();
           // this.newDefinition = { name: '', structure: {} };
-          console.log("data")
-          //this.router.navigate(['content/dataDefinitions'])
+          // console.log(data)
+          this.router.navigate(['content/dataDefinitions'])
         },
         (error) => console.error(error)
       );
@@ -281,8 +395,16 @@ export class BuilderComponent {
   // }
 
   switchLanguage(language: string) {
-    // this.currentLanguage = language; // Set the selected language
-
+     this.currentLanguage = language; // Set the selected language
+     this.triggerTextAreaSource(this.testData[0]?.DEFINITION?.fields)
+    //  console.log(this.currentLanguage)
+    //  console.log(JSON.parse(this.formData))
+    if(this.currentLanguage == 'ar') {
+      // console.log(this.oldParentForm)
+      // this.oldParentForm.map((item: any) => {
+      //   return { ...item, 'defaultValue': '' };
+      // });
+    }
     // // Update the form fields' labels and predefined options based on the selected language
     // this.builder.schema.components.forEach((component: any) => {
     //   if (component.key === 'textField') {

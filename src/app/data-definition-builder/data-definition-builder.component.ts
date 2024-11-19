@@ -6,7 +6,7 @@ import { TabsModule, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { FormsModule } from '@angular/forms';import { BuilderComponent } from '../builder/builder.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../data.service';
-
+import { ConvertXmlToJson } from '../../Utilities/HelperFunctions/xmlToJson';
 @Component({
   selector: 'app-data-definition-builder',
   standalone: true,
@@ -41,12 +41,12 @@ export class DataDefinitionBuilderComponent {
     try {
       // console.log("text" ,JSON.stringify($event, null, 2));
       this.textareaValue= JSON.stringify($event, null, 2);
-      console.log("wwww" , this.textareaValue);
+      //console.log("wwww" , this.textareaValue);
     } catch (e) {
-      // console.error('Invalid JSON array input', e);
+      console.error('Invalid JSON array input', e);
       this.textareaValue = '';
     }
-    // console.log("in here" , this.textareaValue);
+    //console.log("in here" , this.textareaValue);
   }
 
   onBuilderChange(formComponents: any) {
