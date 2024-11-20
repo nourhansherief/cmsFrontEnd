@@ -36,6 +36,7 @@ export class DataDefinitionBuilderComponent {
   }
 
   setTextValue($event:any){
+    this.textareaValue = '';
     console.log($event)
     // console.log("event" , $event.target.component);
     try {
