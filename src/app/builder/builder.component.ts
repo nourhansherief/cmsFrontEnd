@@ -125,11 +125,11 @@ export class BuilderComponent {
             // this.triggerTextAreaSource(JSON.stringify(data[0]?.DEFINITION?.fields));
             // console.log("aaaa" , data[0]?.DEFINITION?.fields)
 
-            // this.triggerTextAreaSource(formatDDFObjForMultipleLangs(x[0]?.DEFINITION?.fields)[this.currentLanguage]);
-            // this.formChanges.emit(formatDDFObjForMultipleLangs(data[0]?.DEFINITION?.fields)[this.currentLanguage]);
+            this.triggerTextAreaSource(formatDDFObjForMultipleLangs(x[0]?.DEFINITION?.fields)[this.currentLanguage]);
+            this.formChanges.emit(formatDDFObjForMultipleLangs(data[0]?.DEFINITION?.fields)[this.currentLanguage]);
 
-            this.triggerTextAreaSource(x[0]?.DEFINITION?.fields);
-            this.formChanges.emit(data[0]?.DEFINITION?.fields);
+            // this.triggerTextAreaSource(x[0]?.DEFINITION?.fields);
+            // this.formChanges.emit(data[0]?.DEFINITION?.fields);
 
             // this.formData = data[0]?.DEFINITION?.fields;
             //this.dataList = data;
@@ -257,6 +257,7 @@ export class BuilderComponent {
     this.formChanges.emit(val);
     // let a =
     this.sourceData[this.currentLanguage] = this.formJsonVal;
+
     console.log("tttt", this.sourceData);
     // if (this.currentLanguage == 'en') {
     //   console.log(this.persistentVal)
@@ -381,8 +382,8 @@ export class BuilderComponent {
     //console.log("testData" , formatDDFObjForMultipleLangs(this.testData)[this.currentLanguage])
     console.log("source" , this.sourceData)
     if (!this.sourceData['en'] && !this.sourceData['ar']) {
-      console.log("1")
-      this.triggerTextAreaSource(this.testData);
+      this.triggerTextAreaSource(formatDDFObjForMultipleLangs(this.testData)[this.currentLanguage]);
+      this.formChanges.emit(formatDDFObjForMultipleLangs(this.testData)[this.currentLanguage]);
     }else if(this.sourceData['en'] && !this.sourceData['ar']){
       console.log("2")
       let x = JSON.parse(JSON.stringify(this.sourceData['en']));
