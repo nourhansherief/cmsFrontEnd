@@ -241,7 +241,7 @@ export class BuilderComponent {
       console.log("add" , $event);
       this.oldParentForm = $event?.parent?.components;
       val = this.oldParentForm;
-     
+     console.log("add Val" , val)
     }
     // let oldForm = ;
     // console.log("2222", $event?.srcElement?.
@@ -260,7 +260,24 @@ export class BuilderComponent {
     this.formChanges.emit(val);
     // let a =
     this.sourceData[this.currentLanguage] = this.formJsonVal;
- 
+
+    // Handle en & ar when add new TextField
+    if(this.sourceData['en'].length > this.sourceData['ar'].length){
+      for(let i = 0 ; i < this.sourceData['en'].length ; i++){
+        if(i > this.sourceData['ar'].length - 1 ){
+          this.sourceData['ar'].push(this.sourceData['en'][i])
+        }
+      }
+    }
+
+    if(this.sourceData['ar'].length > this.sourceData['en'].length){
+      for(let i = 0 ; i < this.sourceData['ar'].length ; i++){
+        if(i > this.sourceData['en'].length - 1 ){
+          this.sourceData['en'].push(this.sourceData['ar'][i])
+        }
+      }
+    }
+
     console.log("tttt", this.sourceData);
     // if (this.currentLanguage == 'en') {
     //   console.log(this.persistentVal)
