@@ -19,7 +19,7 @@ export const formatDDFObjForMultipleLangs = (data: any) => {
 
   for (let i = 0; i < data.length; i++) {
     const { defaultValueAr, ...objEn } = data[i];
-    const { defaultValue, ...objAr } = data[i];
+    const {  ...objAr } = data[i];
 
     newObj.en.push({ ...objEn });
     newObj.ar.push({ ...objAr , defaultValue : objAr.defaultValueAr});
@@ -27,3 +27,5 @@ export const formatDDFObjForMultipleLangs = (data: any) => {
 
   return newObj;
 };
+
+

@@ -161,18 +161,18 @@ export class BuilderComponent {
 
     //console.log("formC"  ,this.form.components);
     if (!this.sourceData[this.currentLanguage]) {
-      //x = formatDDFObjForMultipleLangs(x)[this.currentLanguage]
+      x = formatDDFObjForMultipleLangs(x)[this.currentLanguage]
 
-      x = x.map((item: any) => {
-        return {
-          ...item,
-          defaultValue:
-            this.currentLanguage == "en"
-              ? item.defaultValue
-              : item.defaultValueAr,
-          // defaultValue :  item.defaultValue
-        };
-      });
+      // x = x.map((item: any) => {
+      //   return {
+      //     ...item,
+      //     defaultValue:
+      //       this.currentLanguage == "en"
+      //         ? item.defaultValue
+      //         : item.defaultValueAr,
+      //     // defaultValue :  item.defaultValue
+      //   };
+      // });
     }
 
     if (x) {
@@ -221,6 +221,8 @@ export class BuilderComponent {
   onChange($event: any) {
     console.log("ssss", $event);
     let val;
+    console.log(this.sourceData)
+    let x  :any = this.sourceData[this.currentLanguage];
     // console.log("new form" , $event?.parent?.components)
     // console.log("inside change event")
     // this.handleFormChange($event);
@@ -228,17 +230,18 @@ export class BuilderComponent {
       // console.log("rrrrr" ,   )
       this.oldParentForm = !this.oldParentForm
         ? this.data[0]?.DEFINITION?.fields
-        : this.oldParentForm;
-      //console.log("inside change event 1" , $event)
+        : x;
+      console.log("inside change event 1" , this.oldParentForm)
       val = this.setDefaultValue(
         $event?.srcElement?.widget?.component?.label,
         $event?.target?.value
       );
+      console.log("inside change event 1" , this.oldParentForm)
     } else {
       console.log("add" , $event);
       this.oldParentForm = $event?.parent?.components;
       val = this.oldParentForm;
-      
+     
     }
     // let oldForm = ;
     // console.log("2222", $event?.srcElement?.
@@ -250,14 +253,14 @@ export class BuilderComponent {
     //   widget
     //   ?.component?.key, $event?.target?.value)
     //   : $event?.parent?.components;
-
+ 
     //console.log("1111", val);
     this.formJsonVal = val;
     console.log("2222999999", this.formJsonVal);
     this.formChanges.emit(val);
     // let a =
     this.sourceData[this.currentLanguage] = this.formJsonVal;
-
+ 
     console.log("tttt", this.sourceData);
     // if (this.currentLanguage == 'en') {
     //   console.log(this.persistentVal)
@@ -273,7 +276,7 @@ export class BuilderComponent {
     //   console.log("preeeeeeeeee" , this.persistentVal)
     //   console.log("Valllllll" , val)
     //   for(let i = 0 ; i < val.length ; i++){
-
+ 
     //     this.persistentVal = this.persistentVal.map((item : any) => {
     //       return {
     //         ...item,
@@ -381,6 +384,10 @@ export class BuilderComponent {
     this.currentLanguage = language; // Set the selected language
     //console.log("testData" , formatDDFObjForMultipleLangs(this.testData)[this.currentLanguage])
     console.log("source" , this.sourceData)
+
+    // let en = formatDDFObjForMultipleLangs(this.testData)['en']
+    // let ar = formatDDFObjForMultipleLangs(this.testData)['ar'];
+
     if (!this.sourceData['en'] && !this.sourceData['ar']) {
       this.triggerTextAreaSource(formatDDFObjForMultipleLangs(this.testData)[this.currentLanguage]);
       this.formChanges.emit(formatDDFObjForMultipleLangs(this.testData)[this.currentLanguage]);
@@ -390,10 +397,11 @@ export class BuilderComponent {
       this.sourceData['ar'] = x;
       this.formChanges.emit(this.sourceData[this.currentLanguage]);
       this.triggerTextAreaSource(this.sourceData[this.currentLanguage]);
-    } else {
+    }  else {
       this.formChanges.emit(this.sourceData[this.currentLanguage]);
       this.triggerTextAreaSource(this.sourceData[this.currentLanguage]);
     }
+
     //  console.log(this.currentLanguage)
     //  console.log(JSON.parse(this.formData))
     // if(this.currentLanguage == 'ar') {
