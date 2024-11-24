@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormioModule } from '@formio/angular';
 import { TabsModule, TabsetComponent } from 'ngx-bootstrap/tabs';
@@ -25,6 +25,9 @@ export class DataDefinitionBuilderComponent {
   }
   textareaValue: string = '';
 
+  constructor(private cdRef: ChangeDetectorRef){
+  }
+
   selectTab(tabId: number) {
     if (this.staticTabs?.tabs[tabId]) {
       this.staticTabs.tabs[tabId].active = true;
@@ -47,6 +50,7 @@ export class DataDefinitionBuilderComponent {
       console.error('Invalid JSON array input', e);
       this.textareaValue = '';
     }
+    this.cdRef.detectChanges();
     //console.log("in here" , this.textareaValue);
   }
 
