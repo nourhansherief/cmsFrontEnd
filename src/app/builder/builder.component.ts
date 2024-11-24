@@ -229,6 +229,15 @@ export class BuilderComponent {
     // Update Data Definition
     if (this.action == "update") {
       submitObj.DEFINITION.fields = formatSourceCodeForSubmit(this.sourceData)
+      console.log(submitObj)
+      // Send Updated Data
+
+      this.dataService.updateDataDefinition(this.id, submitObj).subscribe(
+        () => {
+          this.router.navigate(['content/dataDefinitions'])
+        },
+        (error) => console.error(error)
+      );
     }
     // Create Data Definition
     else {
