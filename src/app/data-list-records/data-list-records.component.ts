@@ -39,6 +39,7 @@ export class DataListRecordsComponent {
   }
 
   loadDataListRecords() {
+    console.log("load")
     this.dataService.getRecordsFromDataList(this.dataListId).subscribe(
       (data) => {
         this.records = data.records;
@@ -47,45 +48,37 @@ export class DataListRecordsComponent {
         this.records.map((record : any ) => {
           recordsIds.push(record.record.RECORDID)
         })
-        console.log(recordsIds)
 
         if (this.records.length > 0) {
-          this.tableHeaders =
-            this.records[0]?.content[0]?.DATA_?.fieldValues.map(
-              (field: any) => {
-                return field.name;
-              }
-            );
 
-          // this.tableData = this.records[3]?.content[0]?.DATA_?.fieldValues.map(
-          //   (field: any) => {
-          //     return field;
-          //   }
-          // );
+          for(let i = 0 ; i < this.records.length ; i++){
+            if(this.records[i]?.content[i]){
+              this.tableHeaders = this.records[i]?.content[i]?.DATA_?.fieldValues.map(
+                (field: any) => {
+                  return field.name;
+                }
+              );
+            }
+          }
+            console.log(this.tableHeaders)
 
           this.tableData = this.records.map((record : any) => {
-            return record.content[0]?.DATA_?.fieldValues.map(
-              (field: any) => {
-                return field;
-              }
-            )
+            if(record?.content[0] !== undefined){
+              return record?.content[0]?.DATA_?.fieldValues.map(
+                (field: any) => {
+                  return field;
+                }
+              )
+            }
           })
 
           console.log(this.tableData)
-          // this.tableHeaders.forEach((header : any) => {
-          //   //let item = this.tableData.find((data : any) => data.name === header);
-          //   // data.find((fields : any) => fields.find((field : any) => field.name === header)
-          //   let gg : any = this.tableData
-          //   let item = gg.map((data : any) => console.log(data))
-          //   console.log(gg)
-          //   //console.log(item)
-          //   //this.row[header] = item ? item.value['en_US'] || '' : '';
-          // })
+
 
           this.rows = this.tableData.map((subArray : any, index : any ) => {
             const row: { [key: string]: string } = {};
             this.tableHeaders.forEach(( header : any ) => {
-              const item = subArray.find((data : any) => data.name === header);
+              const item = subArray.find((data : any) => data?.name === header);
               row[header] = item ? item.value['en_US'] || '' : '';
               row['recordId'] = recordsIds[index]
             });
@@ -113,8 +106,9 @@ export class DataListRecordsComponent {
     this.router.navigate(["content/editRecord", this.dataListId, id]);
   }
 
-  deleteRecord(id: any) {
-    this.dataService.deleteRecord(this.dataListId, id).subscribe(
+  deleteRecord(recordId: any) {
+    console.log(recordId)
+    this.dataService.deleteRecord(recordId).subscribe(
       () => this.loadDataListRecords(),
       (error) => console.error(error)
     );

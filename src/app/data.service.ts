@@ -48,7 +48,7 @@ export class DataService {
   }
 
   createDataList(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/data-list`, data);
+    return this.http.post(`${this.apiUrl}/data-record-set`, data);
   }
 
   updateDataList(id: string, data: any): Observable<any> {
@@ -74,16 +74,16 @@ export class DataService {
     return this.http.get(`${this.apiUrl}/data-list/${dataListId}/structure`);
   }
 
-  deleteRecord(dataListId: string, recordId: string): Observable<any> {
+  deleteRecord(recordId: string): Observable<any> {
     ///:dataListId/records/:recordId
     return this.http.delete(
-      `${this.apiUrl}/data-list/${dataListId}/records/${recordId}`
+      `${this.apiUrl}/data-record/${recordId}`
     );
   }
 
-  findRecordById(dataListId: string, recordId: string): Observable<any> {
+  findRecordById(recordId: any): Observable<any> {
     return this.http.get(
-      `${this.apiUrl}/data-list/${dataListId}/records/${recordId}`
+      `${this.apiUrl}/data-record/${recordId}`
     );
   }
 

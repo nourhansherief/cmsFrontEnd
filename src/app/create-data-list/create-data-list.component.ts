@@ -18,7 +18,9 @@ export class CreateDataListComponent {
   dataListForm: FormGroup;
   dataDefinitions: any[] = [];
   xmlToJson : any = ConvertXmlToJson
-  
+  selectValue : any = ''
+  dataListName : any = ''
+
   constructor(
     private fb: FormBuilder,
     private dataService: DataService,
@@ -42,18 +44,25 @@ export class CreateDataListComponent {
   }
 
   onSubmit(): void {
-    console.log("Nav")
-    this.router.navigate(['content/dataLists']);
-    if (this.dataListForm.valid) {
-      // this.dataService.createDataList(this.dataListForm.value).subscribe(
-      //   (response) => {
-      //     console.log('Data list created successfully', response);
-      //     this.router.navigate(['content/dataLists']);
-      //   },
-      //   (error) => {
-      //     console.error('Error creating data list', error);
-      //   }
-      // );
+    const submitObj = {
+      NAME : this.dataListName,
+      USERNAME : 'Ahmed Rashad',
+      DDMSTRUCTUREID : this.selectValue
     }
+    console.log(submitObj)
+
+    if (this.dataListForm.valid) {
+      this.dataService.createDataList(submitObj).subscribe(
+        (response) => {
+          console.log('Data list created successfully', response);
+          this.router.navigate(['content/dataLists']);
+        },
+        (error) => {
+          console.error('Error creating data list', error);
+        }
+      );
+    }
+
+    this.router.navigate(['content/dataLists']);
   }
 }
