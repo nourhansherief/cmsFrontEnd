@@ -73,13 +73,13 @@ export class DataListRecordsComponent {
           })
 
           console.log(this.tableData)
-
+          
 
           this.rows = this.tableData.map((subArray : any, index : any ) => {
             const row: { [key: string]: string } = {};
             this.tableHeaders.forEach(( header : any ) => {
-              const item = subArray.find((data : any) => data?.name === header);
-              row[header] = item ? item.value['en_US'] || '' : '';
+              const item = subArray.find((data: any) => data?.name === header) ?? { name: '' };
+              row[header] = (item && typeof item.value === 'object') ? item.value['en_US'] : item.value;
               row['recordId'] = recordsIds[index]
             });
             return row;

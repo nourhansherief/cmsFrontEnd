@@ -1,22 +1,31 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DataService } from '../data.service';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { Component, Input } from "@angular/core";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { DataService } from "../data.service";
+import { CommonModule } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
 
 @Component({
-  selector: 'app-create-record',
+  selector: "app-create-record",
   standalone: true,
-  imports: [FormsModule , ReactiveFormsModule , CommonModule , HttpClientModule],
-  providers:[DataService],
-  templateUrl: './create-record.component.html',
-  styleUrl: './create-record.component.css'
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, HttpClientModule],
+  providers: [DataService],
+  templateUrl: "./create-record.component.html",
+  styleUrl: "./create-record.component.css",
 })
 export class CreateRecordComponent {
   @Input() dataListId: any;
   formStructure: any[] = [];
   dynamicForm: FormGroup;
+  dataDefinitionFields: any = [];
+  currentLanguage: any = "en";
+  values: any = { en: [], ar: [] };
 
   constructor(
     private fb: FormBuilder,
@@ -28,33 +37,62 @@ export class CreateRecordComponent {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      this.dataListId = params.get('id');
+    this.route.paramMap.subscribe((params) => {
+      this.dataListId = params.get("id");
+      console.log(this.dataListId);
       this.loadFormStructure();
     });
+
   }
 
   loadFormStructure(): void {
-    this.dataService.getDataDefinitionStructure(this.dataListId).subscribe(
-      (structure) => {
-        console.log("s" , structure);
-        this.formStructure = Object.values(structure);
+    this.dataService.getSingleRecordSet(this.dataListId).subscribe(
+      (data) => {
+        console.log(data);
+        this.formStructure = Object.values(
+          data[0]?.DDMSTRUCTUREID?.DEFINITION?.fields
+        );
+        console.log(this.formStructure);
         this.createForm();
       },
-      (error) => console.error(error)
+      (error) => {
+        console.log(error);
+      }
     );
+    // this.dataService.getDataDefinition(this.dataListId).subscribe(
+    //   (structure) => {
+    //     console.log("s" , structure);
+    //     this.formStructure = Object.values(structure);
+    //     this.createForm();
+    //   },
+    //   (error) => console.error(error)
+    // );
   }
 
   createForm(): void {
-    this.formStructure.forEach(field => {
+    this.formStructure.forEach((field) => {
       this.dynamicForm.addControl(
         field.key,
-        this.fb.control({ value: field.defaultValue || '', disabled: false }, this.getValidators(field?.validate))
+        this.fb.control(
+          { disabled: false },
+          this.getValidators(field?.validate)
+        )
       );
+
+      this.dynamicForm
+        .get(field.key)
+        ?.setValue(
+          this.currentLanguage === "en"
+            ? field.defaultValue
+            : field.defaultValueAr
+        );
+
     });
+    this.storeDataForEachLang()
+
   }
 
-  getValidators(field:any): any[] {
+  getValidators(field: any): any[] {
     const validators = [];
     if (field?.required) {
       validators.push(Validators.required);
@@ -68,16 +106,63 @@ export class CreateRecordComponent {
     return validators;
   }
 
-  onSubmit(): void {
-    if (this.dynamicForm.valid) {
-      this.dataService.addRecordToDataList(this.dataListId, this.dynamicForm.value).subscribe(
-        () => {
-          console.log('Record added successfully');
-          this.router.navigate(['content/dataListRecords' , this.dataListId])
-        },
-        (error) => console.error(error)
-      );
-    }
+  switchLanguage(language?: string) {
+    this.currentLanguage = language; // Set the selected language
+    this.createForm();
+
   }
 
+  storeDataForEachLang() {
+    this.dynamicForm.valueChanges.subscribe((data) => {
+      if (this.currentLanguage == "en") {
+        this.values?.en?.push(data);
+      } else if (this.currentLanguage == "ar") {
+        this.values?.ar?.push(data);
+      }
+    })
+
+  }
+
+  onSubmit(): void {
+    this.values = {en : this.values.en.at(-1) , ar : this.values.ar.at(-1)}
+    let submitObj: any = {
+      USERNAME: "Ahmed Rashad",
+      RECORDSETID: this.dataListId,
+    };
+
+      let fields: any = [];
+      let field = {};
+      for (let key in this.values.en) {
+        field = {
+          name: key,
+          value: {
+            en_US: this.values.en[key],
+          },
+        };
+        fields.push(field);
+      }
+
+      for (let key in this.values.ar) {
+        for (let i of fields) {
+          if (i.name == key) {
+            i.value.ar_SA = this.values.ar[key];
+          }
+        }
+      }
+
+      submitObj.DATA_ = {
+        defaultLanguageId: "en_US",
+        fieldValues: fields,
+      };
+
+      this.dataService
+        .addRecordToDataList(submitObj)
+        .subscribe(
+          () => {
+            console.log("Record added successfully");
+            this.router.navigate(["content/dataListRecords", this.dataListId]);
+          },
+          (error) => console.error(error)
+        );
+  }
 }

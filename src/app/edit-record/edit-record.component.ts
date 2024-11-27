@@ -35,7 +35,7 @@ export class EditRecordComponent {
       this.dataListId = params.get('dataList');
       this.id = params.get('id');
       if (this.id) {
-        this.dataService.findRecordById(this.dataListId ,this.id).subscribe(
+        this.dataService.findRecordById(this.id).subscribe(
           (data) => {
             console.log("data" , data);
             // console.log("s" , structure);

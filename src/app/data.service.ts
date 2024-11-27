@@ -59,9 +59,9 @@ export class DataService {
     return this.http.delete(`${this.apiUrl}/data-list/${id}`);
   }
 
-  addRecordToDataList(dataListId: string, record: any): Observable<any> {
+  addRecordToDataList(record: any): Observable<any> {
     return this.http.post(
-      `${this.apiUrl}/data-list/${dataListId}/records`,
+      `${this.apiUrl}/data-record`,
       record
     );
   }
@@ -96,6 +96,11 @@ export class DataService {
       `${this.apiUrl}/data-list/${dataListId}/records/${recordId}`,
       data
     );
+  }
+
+  // RecordSet
+  getSingleRecordSet(recordSetId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/data-record-set/${recordSetId}`);
   }
 
   getWebContent(prefix: any) {
