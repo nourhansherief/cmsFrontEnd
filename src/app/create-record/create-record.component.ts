@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../data.service";
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
+import { formatDDFObjForMultipleLangs } from "../../Utilities/HelperFunctions/formatDDFObj";
 
 @Component({
   selector: "app-create-record",
@@ -26,6 +27,7 @@ export class CreateRecordComponent {
   dataDefinitionFields: any = [];
   currentLanguage: any = "en";
   values: any = { en: [], ar: [] };
+  isValid : Boolean = true
 
   constructor(
     private fb: FormBuilder,
@@ -42,7 +44,6 @@ export class CreateRecordComponent {
       console.log(this.dataListId);
       this.loadFormStructure();
     });
-
   }
 
   loadFormStructure(): void {
@@ -59,14 +60,6 @@ export class CreateRecordComponent {
         console.log(error);
       }
     );
-    // this.dataService.getDataDefinition(this.dataListId).subscribe(
-    //   (structure) => {
-    //     console.log("s" , structure);
-    //     this.formStructure = Object.values(structure);
-    //     this.createForm();
-    //   },
-    //   (error) => console.error(error)
-    // );
   }
 
   createForm(): void {
@@ -86,10 +79,8 @@ export class CreateRecordComponent {
             ? field.defaultValue
             : field.defaultValueAr
         );
-
     });
-    this.storeDataForEachLang()
-
+    this.storeDataForEachLang();
   }
 
   getValidators(field: any): any[] {
@@ -119,50 +110,52 @@ export class CreateRecordComponent {
       } else if (this.currentLanguage == "ar") {
         this.values?.ar?.push(data);
       }
-    })
+    });
 
+    this.isValid = (this.values.en.length >= 1 && this.values.ar.length >= 1 )
   }
 
   onSubmit(): void {
-    this.values = {en : this.values.en.at(-1) , ar : this.values.ar.at(-1)}
+    this.values = { en: this.values.en.at(-1), ar: this.values.ar.at(-1) };
+
     let submitObj: any = {
       USERNAME: "Ahmed Rashad",
       RECORDSETID: this.dataListId,
     };
 
-      let fields: any = [];
-      let field = {};
-      for (let key in this.values.en) {
-        field = {
-          name: key,
-          value: {
-            en_US: this.values.en[key],
-          },
-        };
-        fields.push(field);
-      }
+    let fields: any = [];
+    let field = {};
+    for (let key in this.values.en) {
+      field = {
+        name: key,
+        value: {
+          en_US: this.values.en[key],
+        },
+      };
+      fields.push(field);
+    }
 
-      for (let key in this.values.ar) {
-        for (let i of fields) {
-          if (i.name == key) {
-            i.value.ar_SA = this.values.ar[key];
-          }
+    for (let key in this.values.ar) {
+      for (let i of fields) {
+        if (i.name == key) {
+          i.value.ar_SA = this.values.ar[key];
         }
       }
+    }
 
-      submitObj.DATA_ = {
-        defaultLanguageId: "en_US",
-        fieldValues: fields,
-      };
+    submitObj.DATA_ = {
+      defaultLanguageId: "en_US",
+      fieldValues: fields,
+    };
 
-      this.dataService
-        .addRecordToDataList(submitObj)
-        .subscribe(
-          () => {
-            console.log("Record added successfully");
-            this.router.navigate(["content/dataListRecords", this.dataListId]);
-          },
-          (error) => console.error(error)
-        );
+    this.dataService
+      .addRecordToDataList(submitObj)
+      .subscribe(
+        () => {
+          console.log("Record added successfully");
+          this.router.navigate(["content/dataListRecords", this.dataListId]);
+        },
+        (error) => console.error(error)
+      );
   }
 }
