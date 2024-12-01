@@ -55,6 +55,11 @@ export class DataService {
     return this.http.put(`${this.apiUrl}/data-list/${id}`, data);
   }
 
+  updateDataListName(data : any): Observable<any> {
+    const {RECORDSETID , NAME} = data
+    return this.http.patch(`${this.apiUrl}/data-record-set/${RECORDSETID}`, {NAME})
+  }
+
   deleteDataList(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/data-list/${id}`);
   }
