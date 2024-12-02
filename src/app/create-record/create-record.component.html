@@ -23,10 +23,14 @@
       </div>
       <div class="col-12 py-3">
         <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
-          <div *ngFor="let field of formStructure" class="mb-3">
-            <label [for]="field.key" class="form-label">{{
-              field.label
-            }}</label>
+          <div *ngFor="let field of formStructure; let i = index" class="mb-3">
+            <label
+              *ngIf="field.type !== 'radio' || field.type !== 'select'"
+              [for]="field.key"
+              class="form-label"
+              >{{ field.label }}</label
+            >
+
             <input
               *ngIf="field.type === 'textfield'"
               type="text"
@@ -43,6 +47,41 @@
               [formControlName]="field.key"
               [required]="field?.validate?.required"
             />
+            <input
+              *ngIf="field.type === 'checkbox'"
+              type="checkbox"
+              [id]="field.key"
+              [formControlName]="field.key"
+              [value]="field.value"
+            />
+
+            <ng-container *ngIf="field.type == 'radio'">
+              <div *ngFor="let op of field.values">
+                <label [for]="field.key" class="form-label">{{
+                  op.label
+                }}</label>
+                <input
+                *ngIf="field.type === 'radio'"
+                type="radio"
+                [id]="field.key"
+                [formControlName]="field.key"
+                [value]="op?.value"
+              />
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="field.type === 'select'">
+              <select
+                class="form-control"
+                [id]="field.key"
+                [formControlName]="field.key"
+              >
+                <option *ngFor="let op of field.data.values" [value]="op.value">
+                  {{ op.label }}
+                </option>
+              </select>
+            </ng-container>
+
             <textarea
               *ngIf="field.type === 'textarea'"
               class="form-control"
@@ -64,11 +103,7 @@
               >
             </div>
           </div>
-          <button
-            type="submit"
-            class="btn btn-primary"
-            [disabled]="!isValid"
-          >
+          <button type="submit" class="btn btn-primary" [disabled]="!isValid">
             Submit
           </button>
         </form>

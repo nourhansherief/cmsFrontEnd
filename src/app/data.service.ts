@@ -93,12 +93,11 @@ export class DataService {
   }
 
   updateRecord(
-    dataListId: string,
     recordId: string,
     data: any
   ): Observable<any> {
-    return this.http.put(
-      `${this.apiUrl}/data-list/${dataListId}/records/${recordId}`,
+    return this.http.patch(
+      `${this.apiUrl}/data-record/${recordId}`,
       data
     );
   }
