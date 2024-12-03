@@ -15,7 +15,7 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <app-search
-                                [data]="fullDataDefinition"
+                                [endpoint]="'data-definitions'"
                                 (searchResults)="handleSearchResult($event)"
                                 (isThereAValue)="handleSearchResult($event)"
                               ></app-search>

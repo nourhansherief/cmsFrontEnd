@@ -14,9 +14,9 @@
         <button *ngIf="currentLanguage == 'en'" class="btn btn-primary my-2" (click)="switchLanguage('ar')">Arabic</button>
     </div>
 
-    <app-loader *ngIf="isLoading"></app-loader>
+    <!-- <app-loader *ngIf="isLoading"></app-loader> -->
 
-    <div *ngIf="!isLoading" class="position-relative my-2 py-2">
+    <div  class="position-relative my-2 py-2">
         <form-builder [form]="form" [rebuild]="rebuildEmitter.asObservable()" (change)="onChange($event)"
             [options]="builderOptions" #formBuilder></form-builder>
 

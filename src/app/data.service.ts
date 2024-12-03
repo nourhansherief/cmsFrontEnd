@@ -111,4 +111,9 @@ export class DataService {
     // return this.http.delete(`${this.apiUrl}/data-list/${dataListId}/records/${recordId}`);
     return this.http.get(`${this.apiUrl}/data-list/content`);
   }
+
+  // Search
+  searchForData(endpoint: any , term : any) {
+    return this.http.get(`${this.apiUrl}/${endpoint}?term=${term}`)
+  }
 }
