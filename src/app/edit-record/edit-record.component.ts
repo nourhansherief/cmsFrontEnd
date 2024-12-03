@@ -10,11 +10,12 @@ import {
   Validators,
 } from "@angular/forms";
 import { CommonModule } from "@angular/common";
+import { LoaderComponent } from "../../Shared/Components/loader/loader.component";
 
 @Component({
   selector: "app-edit-record",
   standalone: true,
-  imports: [HttpClientModule, FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [HttpClientModule, FormsModule, ReactiveFormsModule, CommonModule, LoaderComponent],
   providers: [DataService],
   templateUrl: "./edit-record.component.html",
   styleUrl: "./edit-record.component.css",
@@ -30,6 +31,8 @@ export class EditRecordComponent {
   values: any = { en: [], ar: [] };
   dataListValues: any;
   isValid : Boolean = true
+  isLoading : Boolean = true;
+
 
   constructor(
     private dataService: DataService,
@@ -47,6 +50,7 @@ export class EditRecordComponent {
       if (this.recordId) {
         this.dataService.findRecordById(this.recordId).subscribe(
           (data) => {
+            this.isLoading = false
             console.log("data", data);
             // console.log("s" , structure);
             this.getDataDefinitionForRecord(data[0].RECORDSETID);

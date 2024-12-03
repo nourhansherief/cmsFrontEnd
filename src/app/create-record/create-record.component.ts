@@ -11,11 +11,11 @@ import { DataService } from "../data.service";
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { formatDDFObjForMultipleLangs } from "../../Utilities/HelperFunctions/formatDDFObj";
-
+import { LoaderComponent } from "../../Shared/Components/loader/loader.component";
 @Component({
   selector: "app-create-record",
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, HttpClientModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, HttpClientModule , LoaderComponent],
   providers: [DataService],
   templateUrl: "./create-record.component.html",
   styleUrl: "./create-record.component.css",
@@ -28,6 +28,8 @@ export class CreateRecordComponent {
   currentLanguage: any = "en";
   values: any = { en: [], ar: [] };
   isValid : Boolean = true
+  isLoading: Boolean = true;
+
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +51,7 @@ export class CreateRecordComponent {
   loadFormStructure(): void {
     this.dataService.getSingleRecordSet(this.dataListId).subscribe(
       (data) => {
+        this.isLoading = false
         console.log(data);
         this.formStructure = Object.values(
           data[0]?.DDMSTRUCTUREID?.DEFINITION?.fields

@@ -4,7 +4,8 @@
             Records
         </div>
     </div>
-    <div class="row">
+    <app-loader *ngIf="isLoading"></app-loader>
+    <div *ngIf="!isLoading" class="row">
         <div class="col-12">
             <div class="groupContainer">
                 <div class="container">

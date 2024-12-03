@@ -20,10 +20,12 @@ import { DataService } from "../data.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { ConvertXmlToJson } from "../../Utilities/HelperFunctions/xmlToJson";
 import { formatSourceCodeForSubmit, formatDDFObjForMultipleLangs } from "../../Utilities/HelperFunctions/formatDDFObj";
+import { LoaderComponent } from "../../Shared/Components/loader/loader.component";
+
 @Component({
   selector: "app-builder",
   standalone: true,
-  imports: [CommonModule, FormioModule, FormsModule],
+  imports: [CommonModule, FormioModule, FormsModule, LoaderComponent],
   templateUrl: "./builder.component.html",
   styleUrl: "./builder.component.css",
 })
@@ -36,6 +38,7 @@ export class BuilderComponent {
   refreshForm = new EventEmitter();
   rebuildEmitter = new EventEmitter();
   e: any;
+  isLoading : Boolean = true
   @ViewChild("json", { static: false }) jsonElement?: ElementRef;
   @ViewChild("formBuilder", { static: true }) formBuilder: any;
   oldParentForm: any;
@@ -90,6 +93,7 @@ export class BuilderComponent {
       if (this.id) {
         this.dataService.getDataDefinition(this.id).subscribe(
           (data) => {
+            this.isLoading = false
             this.data = data;
             this.action = "update";
             let cpyData: any = JSON.parse(JSON.stringify(data));
@@ -228,6 +232,7 @@ export class BuilderComponent {
     };
     // Update Data Definition
     if (this.action == "update") {
+      this.isLoading = false
       submitObj.DEFINITION.fields = formatSourceCodeForSubmit(this.sourceData)
       console.log(submitObj)
       // Send Updated Data
@@ -241,6 +246,7 @@ export class BuilderComponent {
     }
     // Create Data Definition
     else {
+      this.isLoading = false
       submitObj = { ...submitObj, USERNAME: "Ahmed Rashad" };
       this.dataService.createDataDefinition({ ...submitObj }).subscribe(
         (data) => {

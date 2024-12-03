@@ -7,7 +7,7 @@ import { SearchComponent } from "../../Shared/Components/search/search.component
 import { PaginationComponent } from "../../Shared/Components/pagination/pagination.component";
 import { ConvertXmlToJson } from "../../Utilities/HelperFunctions/xmlToJson";
 import { FormsModule } from "@angular/forms";
-
+import { LoaderComponent } from "../../Shared/Components/loader/loader.component";
 @Component({
   selector: "app-datalists",
   standalone: true,
@@ -16,6 +16,7 @@ import { FormsModule } from "@angular/forms";
     CommonModule,
     HttpClientModule,
     SearchComponent,
+    LoaderComponent,
     PaginationComponent,
   ],
   providers: [DataService],

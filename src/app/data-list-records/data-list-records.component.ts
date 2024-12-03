@@ -3,11 +3,12 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { DataService } from "../data.service";
 import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from "@angular/common";
+import { LoaderComponent } from "../../Shared/Components/loader/loader.component";
 
 @Component({
   selector: "app-data-list-records",
   standalone: true,
-  imports: [HttpClientModule, CommonModule],
+  imports: [HttpClientModule, CommonModule , LoaderComponent],
   providers: [DataService],
   templateUrl: "./data-list-records.component.html",
   styleUrl: "./data-list-records.component.css",
@@ -19,7 +20,8 @@ export class DataListRecordsComponent {
   tableData: any;
   //row: { [key: string]: string } = {};
   rows: any = {};
-
+  isLoading: Boolean = true;
+  
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -42,6 +44,7 @@ export class DataListRecordsComponent {
     console.log("load")
     this.dataService.getRecordsFromDataList(this.dataListId).subscribe(
       (data) => {
+        this.isLoading = false
         this.records = data.records;
         let recordsIds : any = []
         console.log("records", this.records);

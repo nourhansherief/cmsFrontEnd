@@ -21,7 +21,8 @@
           Arabic
         </button>
       </div>
-      <div class="col-12 py-3">
+      <app-loader *ngIf="isLoading"></app-loader>
+      <div *ngIf="!isLoading" class="col-12 py-3">
         <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
           <div *ngFor="let field of formStructure; let i = index" class="mb-3">
             <label
