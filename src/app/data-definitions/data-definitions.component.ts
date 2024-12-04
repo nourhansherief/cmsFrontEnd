@@ -7,6 +7,7 @@ import { NgxPaginationModule } from "ngx-pagination";
 import { SearchComponent } from "../../Shared/Components/search/search.component";
 import { PaginationComponent } from "../../Shared/Components/pagination/pagination.component";
 import { ConvertXmlToJson } from "../../Utilities/HelperFunctions/xmlToJson";
+import { ModalComponent } from "../../Shared/Components/modal/modal.component";
 @Component({
   selector: "app-data-definitions",
   standalone: true,
@@ -15,6 +16,7 @@ import { ConvertXmlToJson } from "../../Utilities/HelperFunctions/xmlToJson";
     HttpClientModule,
     NgxPaginationModule,
     SearchComponent,
+    ModalComponent,
     PaginationComponent,
   ],
   providers: [DataService],

@@ -8,6 +8,7 @@ import { PaginationComponent } from "../../Shared/Components/pagination/paginati
 import { ConvertXmlToJson } from "../../Utilities/HelperFunctions/xmlToJson";
 import { FormsModule } from "@angular/forms";
 import { LoaderComponent } from "../../Shared/Components/loader/loader.component";
+import { ModalComponent } from "../../Shared/Components/modal/modal.component";
 @Component({
   selector: "app-datalists",
   standalone: true,
@@ -17,6 +18,7 @@ import { LoaderComponent } from "../../Shared/Components/loader/loader.component
     HttpClientModule,
     SearchComponent,
     LoaderComponent,
+    ModalComponent,
     PaginationComponent,
   ],
   providers: [DataService],
@@ -95,7 +97,7 @@ export class DatalistsComponent {
     }
   }
 
-  deleteDataList(id: string) {
+  deleteDataListItem(id: string) {
     this.dataService.deleteDataList(id).subscribe(
       () => {
         this.filteredData = [];
