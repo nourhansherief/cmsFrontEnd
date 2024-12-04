@@ -59,8 +59,9 @@ export class DataListRecordsComponent {
                 typeof this.records[i]?.content[i]?.DATA_ == "string"
                   ? JSON.parse(this.records[i]?.content[i]?.DATA_)
                   : this.records[i]?.content[i]?.DATA_;
+
               this.tableHeaders = dataObj?.fieldValues.map((field: any) => {
-                return field.name;
+                return field?.NAME ?? field?.name;
               });
             }
           }
@@ -84,7 +85,7 @@ export class DataListRecordsComponent {
             const row: { [key: string]: string } = {};
             this.tableHeaders.forEach((header: any) => {
               const item = subArray.find(
-                (data: any) => data?.name === header
+                (data: any) => (data?.NAME ? data?.NAME : data?.name) === header
               ) ?? { name: "" };
               row[header] =
                 item && typeof item.value === "object"
