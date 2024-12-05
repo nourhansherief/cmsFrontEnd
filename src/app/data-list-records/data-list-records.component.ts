@@ -4,11 +4,12 @@ import { DataService } from "../data.service";
 import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from "@angular/common";
 import { LoaderComponent } from "../../Shared/Components/loader/loader.component";
+import { ModalComponent } from "../../Shared/Components/modal/modal.component";
 
 @Component({
   selector: "app-data-list-records",
   standalone: true,
-  imports: [HttpClientModule, CommonModule, LoaderComponent],
+  imports: [HttpClientModule, CommonModule, LoaderComponent , ModalComponent],
   providers: [DataService],
   templateUrl: "./data-list-records.component.html",
   styleUrl: "./data-list-records.component.css",
@@ -61,7 +62,7 @@ export class DataListRecordsComponent {
                   : this.records[i]?.content[i]?.DATA_;
 
               this.tableHeaders = dataObj?.fieldValues.map((field: any) => {
-                return field?.NAME ?? field?.name;
+                return field?.name
               });
             }
           }
@@ -85,7 +86,7 @@ export class DataListRecordsComponent {
             const row: { [key: string]: string } = {};
             this.tableHeaders.forEach((header: any) => {
               const item = subArray.find(
-                (data: any) => (data?.NAME ? data?.NAME : data?.name) === header
+                (data: any) => data?.name === header
               ) ?? { name: "" };
               row[header] =
                 item && typeof item.value === "object"

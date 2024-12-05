@@ -83,7 +83,7 @@ export class EditRecordComponent {
         this.formStructure = Object.values(
           data[0]?.DDMSTRUCTUREID?.DEFINITION?.fields
         );
-        console.log(this.formStructure);
+        console.log(data);
         this.dataDefinitionData = data[0];
         this.createForm();
         // this.createForm();
@@ -96,7 +96,8 @@ export class EditRecordComponent {
 
   createForm(): void {
     this.dataListValues = this.data.DATA_?.fieldValues || [];
-    console.log(this.dataListValues);
+    console.log(this.formStructure);
+    console.log(this.dataListValues)
     this.formStructure.forEach((field) => {
       this.dataListValues.forEach((ddlField: any) => {
         if (field?.key == ddlField?.name) {
@@ -196,7 +197,7 @@ export class EditRecordComponent {
 
     for (let key in this.values.ar) {
       for (let i of fields) {
-        if (i.name == key) {
+        if ( i.name == key) {
           i.value.ar_SA = this.values.ar[key];
         }
       }
