@@ -15,7 +15,13 @@ import { LoaderComponent } from "../../Shared/Components/loader/loader.component
 @Component({
   selector: "app-edit-record",
   standalone: true,
-  imports: [HttpClientModule, FormsModule, ReactiveFormsModule, CommonModule, LoaderComponent],
+  imports: [
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    LoaderComponent,
+  ],
   providers: [DataService],
   templateUrl: "./edit-record.component.html",
   styleUrl: "./edit-record.component.css",
@@ -30,9 +36,8 @@ export class EditRecordComponent {
   currentLanguage: any = "en";
   values: any = { en: [], ar: [] };
   dataListValues: any;
-  isValid : Boolean = true
-  isLoading : Boolean = true;
-
+  isValid: Boolean = true;
+  isLoading: Boolean = true;
 
   constructor(
     private dataService: DataService,
@@ -50,13 +55,14 @@ export class EditRecordComponent {
       if (this.recordId) {
         this.dataService.findRecordById(this.recordId).subscribe(
           (data) => {
-            this.isLoading = false
+            this.isLoading = false;
             console.log("data", data);
             // console.log("s" , structure);
             this.getDataDefinitionForRecord(data[0].RECORDSETID);
             console.log(this.dataDefinitionData);
             //this.formStructure = Object.values(data?.definition);
             this.data = data[0];
+
             console.log(this.formStructure);
 
             // this.action = 'update';
@@ -95,9 +101,13 @@ export class EditRecordComponent {
   }
 
   createForm(): void {
-    this.dataListValues = this.data.DATA_?.fieldValues || [];
+    let parsingData =
+      typeof this.data.DATA_ == "string"
+        ? JSON.parse(this.data.DATA_)
+        : this.data.DATA_;
+    this.dataListValues = parsingData.fieldValues;
     console.log(this.formStructure);
-    console.log(this.dataListValues)
+    console.log(this.dataListValues);
     this.formStructure.forEach((field) => {
       this.dataListValues.forEach((ddlField: any) => {
         if (field?.key == ddlField?.name) {
@@ -121,20 +131,26 @@ export class EditRecordComponent {
     this.dynamicForm.valueChanges.subscribe((data) => {
       if (this.currentLanguage == "en") {
         if (data) {
-          this.values.en = []
+          this.values.en = [];
           this.values?.en?.push(data);
-          this.values.ar = this.values.ar.length >= 1 ? this.values.ar : this.transformedObject(this.dataListValues , 'ar_SA')
+          this.values.ar =
+            this.values.ar.length >= 1
+              ? this.values.ar
+              : this.transformedObject(this.dataListValues, "ar_SA");
         }
       } else if (this.currentLanguage == "ar") {
         if (data) {
-          this.values.ar = []
+          this.values.ar = [];
           this.values?.ar?.push(data);
-          this.values.en = this.values.en.length >= 1 ? this.values.en : this.transformedObject(this.dataListValues , 'en_US')
+          this.values.en =
+            this.values.en.length >= 1
+              ? this.values.en
+              : this.transformedObject(this.dataListValues, "en_US");
         }
       }
     });
 
-    this.isValid = (this.values.en.length >= 1 && this.values.ar.length >= 1 )
+    this.isValid = this.values.en.length >= 1 && this.values.ar.length >= 1;
   }
 
   getValidators(field: any): any[] {
@@ -160,7 +176,7 @@ export class EditRecordComponent {
     this.createForm();
   }
 
-  transformedObject(data: any , lang : any) {
+  transformedObject(data: any, lang: any) {
     return data.reduce((result: any, item: any) => {
       result[item.name] = item.value[lang];
       return result;
@@ -197,7 +213,7 @@ export class EditRecordComponent {
 
     for (let key in this.values.ar) {
       for (let i of fields) {
-        if ( i.name == key) {
+        if (i.name == key) {
           i.value.ar_SA = this.values.ar[key];
         }
       }
@@ -210,15 +226,13 @@ export class EditRecordComponent {
 
     console.log(submitObj);
     if (this.dynamicForm.valid) {
-      this.dataService
-        .updateRecord(this.recordId, submitObj)
-        .subscribe(
-          () => {
-            console.log("Record updated successfully");
-            this.router.navigate(["content/dataListRecords", this.dataListId]);
-          },
-          (error) => console.error(error)
-        );
+      this.dataService.updateRecord(this.recordId, submitObj).subscribe(
+        () => {
+          console.log("Record updated successfully");
+          this.router.navigate(["content/dataListRecords", this.dataListId]);
+        },
+        (error) => console.error(error)
+      );
     }
   }
 }

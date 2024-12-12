@@ -109,7 +109,7 @@ export class DataService {
 
   getWebContent(prefix: any) {
     // return this.http.delete(`${this.apiUrl}/data-list/${dataListId}/records/${recordId}`);
-    return this.http.get(`${this.apiUrl}/data-list/content`);
+    return this.http.get(`${this.apiUrl}/data-list/webContentApi/web_${prefix}?lang=en`);
   }
 
   // Search

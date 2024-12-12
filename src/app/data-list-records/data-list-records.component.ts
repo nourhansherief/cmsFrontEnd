@@ -85,7 +85,7 @@ export class DataListRecordsComponent {
           this.rows = this.tableData.map((subArray: any, index: any) => {
             const row: { [key: string]: string } = {};
             this.tableHeaders.forEach((header: any) => {
-              const item = subArray.find(
+              const item = subArray?.find(
                 (data: any) => data?.name === header
               ) ?? { name: "" };
               row[header] =
@@ -124,4 +124,5 @@ export class DataListRecordsComponent {
       (error) => console.error(error)
     );
   }
+
 }
