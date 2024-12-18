@@ -22,6 +22,7 @@
         </button>
       </div>
       <app-loader *ngIf="isLoading"></app-loader>
+      @if (loadControls()) {
       <div *ngIf="!isLoading" class="col-12 py-3">
         <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
           <div *ngFor="let field of formStructure" class="mb-3">
@@ -111,6 +112,7 @@
           </button>
         </form>
       </div>
+    }
     </div>
   </div>
 </div>

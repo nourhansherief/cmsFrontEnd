@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, signal, WritableSignal } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { DataService } from "../data.service";
 import { HttpClientModule } from "@angular/common/http";
@@ -38,6 +38,7 @@ export class EditRecordComponent {
   dataListValues: any;
   isValid: Boolean = true;
   isLoading: Boolean = true;
+  public loadControls: WritableSignal<boolean> = signal(false);
 
   constructor(
     private dataService: DataService,
@@ -86,13 +87,26 @@ export class EditRecordComponent {
   getDataDefinitionForRecord(recordSetId: any) {
     this.dataService.getSingleRecordSet(recordSetId).subscribe(
       (data) => {
+        this.loadControls() && this.loadControls.set(false);
         this.formStructure = Object.values(
           data[0]?.DDMSTRUCTUREID?.DEFINITION?.fields
         );
         console.log(data);
         this.dataDefinitionData = data[0];
-        this.createForm();
-        // this.createForm();
+        if(data[0]?.DDMSTRUCTUREID?.PARENTSTRUCTUREID != 0) {
+          this.dataService.getDataDefinition(
+            data[0]?.DDMSTRUCTUREID?.PARENTSTRUCTUREID
+          ).subscribe((data) => {
+            let PARENTSTRUCTUREID = data[0]?.DEFINITION?.fields[0];
+            console.log("parent" , PARENTSTRUCTUREID)
+            this.formStructure.unshift(PARENTSTRUCTUREID);
+            console.log("form" , this.formStructure)
+            this.createForm();
+          })
+        } else {
+
+          this.createForm();
+        }
       },
       (error) => {
         console.log(error);
@@ -151,6 +165,8 @@ export class EditRecordComponent {
     });
 
     this.isValid = this.values.en.length >= 1 && this.values.ar.length >= 1;
+
+    this.loadControls.set(true);
   }
 
   getValidators(field: any): any[] {

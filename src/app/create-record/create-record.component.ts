@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, signal, WritableSignal } from "@angular/core";
 import {
   FormGroup,
   FormBuilder,
@@ -12,10 +12,17 @@ import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { formatDDFObjForMultipleLangs } from "../../Utilities/HelperFunctions/formatDDFObj";
 import { LoaderComponent } from "../../Shared/Components/loader/loader.component";
+import { switchMap } from "rxjs";
 @Component({
   selector: "app-create-record",
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, HttpClientModule , LoaderComponent],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    HttpClientModule,
+    LoaderComponent,
+  ],
   providers: [DataService],
   templateUrl: "./create-record.component.html",
   styleUrl: "./create-record.component.css",
@@ -27,10 +34,10 @@ export class CreateRecordComponent {
   dataDefinitionFields: any = [];
   currentLanguage: any = "en";
   values: any = { en: [], ar: [] };
-  isValid : Boolean = true
+  isValid: Boolean = true;
   isLoading: Boolean = true;
 
-
+  public loadControls: WritableSignal<boolean> = signal(false);
   constructor(
     private fb: FormBuilder,
     private dataService: DataService,
@@ -49,20 +56,25 @@ export class CreateRecordComponent {
   }
 
   loadFormStructure(): void {
-    this.dataService.getSingleRecordSet(this.dataListId).subscribe(
-      (data) => {
-        this.isLoading = false
-        console.log(data);
-        this.formStructure = Object.values(
-          data[0]?.DDMSTRUCTUREID?.DEFINITION?.fields
-        );
-        console.log(this.formStructure);
+    this.dataService.getSingleRecordSet(this.dataListId).subscribe((data) => {
+      this.isLoading = false;
+      this.loadControls() && this.loadControls.set(false);
+      this.formStructure = Object.values(
+        data[0]?.DDMSTRUCTUREID?.DEFINITION?.fields
+      );
+
+      if (data[0]?.DDMSTRUCTUREID?.PARENTSTRUCTUREID != 0) {
+        this.dataService
+          .getDataDefinition(data[0]?.DDMSTRUCTUREID?.PARENTSTRUCTUREID)
+          .subscribe((data) => {
+            let PARENTSTRUCTUREID = data[0]?.DEFINITION?.fields[0];
+            this.formStructure.unshift(PARENTSTRUCTUREID);
+            this.createForm();
+          });
+      } else {
         this.createForm();
-      },
-      (error) => {
-        console.log(error);
       }
-    );
+    });
   }
 
   createForm(): void {
@@ -83,7 +95,10 @@ export class CreateRecordComponent {
             : field.defaultValueAr
         );
     });
+
     this.storeDataForEachLang();
+
+    this.loadControls.set(true);
   }
 
   getValidators(field: any): any[] {
@@ -103,7 +118,6 @@ export class CreateRecordComponent {
   switchLanguage(language?: string) {
     this.currentLanguage = language; // Set the selected language
     this.createForm();
-
   }
 
   storeDataForEachLang() {
@@ -115,7 +129,7 @@ export class CreateRecordComponent {
       }
     });
 
-    this.isValid = (this.values.en.length >= 1 && this.values.ar.length >= 1 )
+    this.isValid = this.values.en.length >= 1 && this.values.ar.length >= 1;
   }
 
   onSubmit(): void {
@@ -150,15 +164,14 @@ export class CreateRecordComponent {
       defaultLanguageId: "en_US",
       fieldValues: fields,
     };
+    console.log(submitObj);
 
-    this.dataService
-      .addRecordToDataList(submitObj)
-      .subscribe(
-        () => {
-          console.log("Record added successfully");
-          this.router.navigate(["content/dataListRecords", this.dataListId]);
-        },
-        (error) => console.error(error)
-      );
+    this.dataService.addRecordToDataList(submitObj).subscribe(
+      () => {
+        console.log("Record added successfully");
+        this.router.navigate(["content/dataListRecords", this.dataListId]);
+      },
+      (error) => console.error(error)
+    );
   }
 }

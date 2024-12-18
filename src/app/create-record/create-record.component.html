@@ -24,6 +24,8 @@
       <app-loader *ngIf="isLoading"></app-loader>
       <div *ngIf="!isLoading" class="col-12 py-3">
         <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+          @if (loadControls()) {
+
           <div *ngFor="let field of formStructure; let i = index" class="mb-3">
             <label
               *ngIf="field.type !== 'radio' || field.type !== 'select'"
@@ -62,12 +64,12 @@
                   op.label
                 }}</label>
                 <input
-                *ngIf="field.type === 'radio'"
-                type="radio"
-                [id]="field.key"
-                [formControlName]="field.key"
-                [value]="op?.value"
-              />
+                  *ngIf="field.type === 'radio'"
+                  type="radio"
+                  [id]="field.key"
+                  [formControlName]="field.key"
+                  [value]="op?.value"
+                />
               </div>
             </ng-container>
 
@@ -104,6 +106,7 @@
               >
             </div>
           </div>
+          }
           <button type="submit" class="btn btn-primary" [disabled]="!isValid">
             Submit
           </button>
